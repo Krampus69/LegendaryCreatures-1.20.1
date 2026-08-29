@@ -63,6 +63,7 @@ public class LegendaryCreatures
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 
         BlockRegistry.register(modBus);
+        BlockEntityRegistry.register(modBus);
         EffectRegistry.register(modBus);
         EntityTypeRegistry.register(modBus);
         ItemRegistry.register(modBus);

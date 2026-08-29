@@ -77,11 +77,12 @@ public class FrogmanEntity extends AnimatedCreatureEntity implements Enemy {
     private static final int POISON_DURATION = 100;
     private static final int POISON_AMPLIFIER = 2;
     private static final int SHIELD_DISABLE_TICKS = 100;
-    private static final int SLEEP_ROLL_INTERVAL = 2400;
-    private static final int SLEEP_DURATION = 3000;
-    private static final int SLEEP_CHANCE = 5;
+    private static final long SLEEP_START_TIME = 18000L;
+    private static final int SLEEP_COOLDOWN = 100;
     private static final int SLEEP_PARTICLE_INTERVAL = 25;
-    private static final int WAKE_UP_DURATION = 15;
+    private static final int WAKE_UP_ANIM_TICKS = 15;
+    private static final int ANIM_TRANSITION_TICKS = 6;
+    private static final int WAKE_UP_DURATION = WAKE_UP_ANIM_TICKS + ANIM_TRANSITION_TICKS;
     private static final double SLEEP_WAKE_RADIUS = 8.0D;
 
     private static final byte EVENT_IDLE = 100;
@@ -92,15 +93,13 @@ public class FrogmanEntity extends AnimatedCreatureEntity implements Enemy {
 
     private boolean leapWanted;
     private int leapCooldown;
-    private int sleepRollCooldown;
-    private int sleepTicks;
+    private int sleepCooldown;
     private int wakeUpTicks;
 
     public FrogmanEntity(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
         this.xpReward = 10;
         this.moveControl = new FrogmanMoveControl(this);
-        this.sleepRollCooldown = this.random.nextInt(SLEEP_ROLL_INTERVAL);
         if (this.getNavigation() instanceof GroundPathNavigation navigation) {
             navigation.setCanFloat(true);
         }
@@ -156,11 +155,13 @@ public class FrogmanEntity extends AnimatedCreatureEntity implements Enemy {
 
             @Override
             public boolean canUse() {
-                return !isLeaping() && !isLeapWanted() && super.canUse();
+                return !isSleeping() && !isWakingUp() && !isLeaping() && !isLeapWanted() && super.canUse();
             }
 
             @Override
             public boolean canContinueToUse() {
+                if (isSleeping() || isWakingUp())
+                    return false;
                 if (isLeapWanted() && !isAttacking())
                     return false;
                 return super.canContinueToUse();
@@ -236,8 +237,9 @@ public class FrogmanEntity extends AnimatedCreatureEntity implements Enemy {
             return;
         setSleeping(false);
         setWakingUp(true);
+        playSound(SoundRegistry.FROGMAN_IDLE.get(), 1.0F, 1.0F);
         this.wakeUpTicks = WAKE_UP_DURATION;
-        this.sleepRollCooldown = SLEEP_ROLL_INTERVAL;
+        this.sleepCooldown = SLEEP_COOLDOWN;
     }
 
     private boolean nearbyPlayerWakesUp() {
@@ -248,6 +250,10 @@ public class FrogmanEntity extends AnimatedCreatureEntity implements Enemy {
         return player != null;
     }
 
+    private boolean isSleepTime() {
+        return this.level().getDayTime() % 24000L >= SLEEP_START_TIME;
+    }
+
     private void tickSleep() {
         if (isWakingUp()) {
             if (--this.wakeUpTicks <= 0)
@@ -256,32 +262,22 @@ public class FrogmanEntity extends AnimatedCreatureEntity implements Enemy {
         }
 
         if (isSleeping()) {
-            if (isInWater() || getLastHurtByMob() != null || nearbyPlayerWakesUp()) {
-                wakeUp();
-                return;
-            }
-
-            if (--this.sleepTicks <= 0)
+            if (!isSleepTime() || isInWater() || getLastHurtByMob() != null || nearbyPlayerWakesUp())
                 wakeUp();
 
             return;
         }
 
-        if (this.sleepRollCooldown > 0) {
-            this.sleepRollCooldown--;
+        if (this.sleepCooldown > 0) {
+            this.sleepCooldown--;
             return;
         }
 
-        this.sleepRollCooldown = SLEEP_ROLL_INTERVAL;
-
-        if (!this.level().isDay() || getTarget() != null || !onGround() || isInWater() || isLeaping())
+        if (!isSleepTime() || getTarget() != null || !onGround() || isInWater() || isLeaping() || nearbyPlayerWakesUp())
             return;
 
-        if (this.random.nextInt(SLEEP_CHANCE) == 0) {
-            setSleeping(true);
-            this.sleepTicks = SLEEP_DURATION;
-            getNavigation().stop();
-        }
+        setSleeping(true);
+        getNavigation().stop();
     }
 
     public boolean isMovementLocked() {
@@ -309,8 +305,12 @@ public class FrogmanEntity extends AnimatedCreatureEntity implements Enemy {
     public void tick() {
         super.tick();
 
-        if (this.level().isClientSide && isSleeping() && this.tickCount % SLEEP_PARTICLE_INTERVAL == 0)
-            spawnSleepingParticle();
+        if (this.level().isClientSide && isSleeping()) {
+            FrogmanSounds.startSleepSound(this);
+
+            if (this.tickCount % SLEEP_PARTICLE_INTERVAL == 0)
+                spawnSleepingParticle();
+        }
     }
 
     private void spawnSleepingParticle() {
@@ -360,21 +360,19 @@ public class FrogmanEntity extends AnimatedCreatureEntity implements Enemy {
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
         nbt.putBoolean("sleeping", isSleeping());
-        nbt.putInt("sleepRollCooldown", this.sleepRollCooldown);
-        nbt.putInt("sleepTicks", this.sleepTicks);
+        nbt.putInt("sleepCooldown", this.sleepCooldown);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
         setSleeping(nbt.getBoolean("sleeping"));
-        this.sleepRollCooldown = nbt.getInt("sleepRollCooldown");
-        this.sleepTicks = nbt.getInt("sleepTicks");
+        this.sleepCooldown = nbt.getInt("sleepCooldown");
     }
 
     @Override
     public void travel(Vec3 travelVector) {
-        if (this.isEffectiveAi() && this.isInWater()) {
+        if (this.isEffectiveAi() && this.isInWater() && !this.onGround()) {
             this.moveRelative(this.getSpeed(), travelVector);
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.6D));
@@ -502,7 +500,7 @@ public class FrogmanEntity extends AnimatedCreatureEntity implements Enemy {
     @Nullable
     @Override
     protected SoundEvent getAmbientSound() {
-        return SoundRegistry.FROGMAN_IDLE.get();
+        return isSleeping() ? null : SoundRegistry.FROGMAN_IDLE.get();
     }
 
     @Nullable

@@ -13,6 +13,7 @@ import static net.minecraft.world.damagesource.DamageEffects.*;
 public class ModDamageTypes
 {
 	public static final ResourceKey<DamageType> ROOT_ATTACK = registerKey("root_attack");
+	public static final ResourceKey<DamageType> HOUND_TRAP = registerKey("hound_trap");
 
 
 	public static ResourceKey<DamageType> registerKey(String name) {
@@ -21,5 +22,6 @@ public class ModDamageTypes
 
 	public static void bootstrap(BootstapContext<DamageType> context) {
 		context.register(ROOT_ATTACK, new DamageType(LegendaryCreatures.MOD_ID + ".root_attack", DamageScaling.NEVER,0.1f, HURT));
+		context.register(HOUND_TRAP, new DamageType(LegendaryCreatures.MOD_ID + ".hound_trap", DamageScaling.NEVER,0.1f, HURT));
 	}
 }

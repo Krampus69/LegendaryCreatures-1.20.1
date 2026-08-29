@@ -787,6 +787,16 @@
       }
     ]
   },
+  "frogman_sleep": {
+    "category": "hostile",
+    "subtitle": "sounds.legendarycreatures.frogman_sleep",
+    "sounds": [
+      {
+        "name": "legendarycreatures:frogman/frogman_sleep",
+        "stream": true
+      }
+    ]
+  },
   "frogman_hurt": {
     "category": "hostile",
     "subtitle": "sounds.legendarycreatures.frogman_hurt",
@@ -917,6 +927,36 @@
     "sounds": [
       {
         "name": "legendarycreatures:shroomling/shroomling_atchoo",
+        "stream": false
+      }
+    ]
+  },
+  "hound_trap_closed": {
+    "category": "block",
+    "subtitle": "sounds.legendarycreatures.hound_trap_closed",
+    "sounds": [
+      {
+        "name": "legendarycreatures:hound/hound_trap_closed",
+        "stream": false
+      }
+    ]
+  },
+  "hound_trap_opened": {
+    "category": "block",
+    "subtitle": "sounds.legendarycreatures.hound_trap_opened",
+    "sounds": [
+      {
+        "name": "legendarycreatures:hound/hound_trap_opened",
+        "stream": false
+      }
+    ]
+  },
+  "hound_trap_damage": {
+    "category": "block",
+    "subtitle": "sounds.legendarycreatures.hound_trap_damage",
+    "sounds": [
+      {
+        "name": "legendarycreatures:hound/hound_trap_damage",
         "stream": false
       }
     ]

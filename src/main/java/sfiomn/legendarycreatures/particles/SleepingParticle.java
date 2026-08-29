@@ -21,7 +21,7 @@ public class SleepingParticle extends TextureSheetParticle {
         this.setSpriteFromAge(animatedSprite);
 
         this.lifetime = 50 + this.random.nextInt(15);
-        this.initialSize = 0.16F + (this.random.nextFloat() * 0.04F);
+        this.initialSize = 0.107F + (this.random.nextFloat() * 0.027F);
         this.quadSize = this.initialSize;
 
         this.drift = (this.random.nextFloat() * 0.6F) + 0.7F;
@@ -29,7 +29,7 @@ public class SleepingParticle extends TextureSheetParticle {
         this.startZ = (float) z;
 
         this.xd = xd;
-        this.yd = yd + 0.012D;
+        this.yd = yd + 0.019D;
         this.zd = zd;
 
         this.rCol = 1.0F;

@@ -121,7 +121,7 @@ public class BullfrogEntity extends AnimatedCreatureEntity implements Enemy {
 
     @Override
     public void travel(Vec3 travelVector) {
-        if (this.isEffectiveAi() && this.isInWater()) {
+        if (this.isEffectiveAi() && this.isInWater() && (!this.onGround() || this.getFluidHeight(FluidTags.WATER) > 1.0D)) {
             this.moveRelative(WATER_ACCELERATION, travelVector);
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));

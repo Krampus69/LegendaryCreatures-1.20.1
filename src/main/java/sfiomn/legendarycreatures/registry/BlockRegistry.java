@@ -12,6 +12,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import sfiomn.legendarycreatures.LegendaryCreatures;
 import sfiomn.legendarycreatures.blocks.DoomFireBlock;
+import sfiomn.legendarycreatures.blocks.HoundTrapBlock;
 
 import java.util.function.Supplier;
 
@@ -20,6 +21,9 @@ public class BlockRegistry {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, LegendaryCreatures.MOD_ID);
     public static final RegistryObject<Block> DOOM_FIRE_BLOCK = BLOCKS.register("doom_fire", () -> new DoomFireBlock(
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE).noCollission().instabreak().lightLevel((p_235468_0_) -> {return 15;}).sound(SoundType.WOOL)));
+
+    public static final RegistryObject<Block> HOUND_TRAP = registerBlock("hound_trap", () -> new HoundTrapBlock(
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0F, 6.0F).sound(SoundType.METAL).noCollission().noOcclusion().requiresCorrectToolForDrops()));
 
     private static <T extends Block> RegistryObject<Block> registerBlock(String name, Supplier<T> block) {
         RegistryObject<Block> newBlock = BLOCKS.register(name, block);

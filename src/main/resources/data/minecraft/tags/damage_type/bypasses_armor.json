@@ -3,6 +3,10 @@
     {
       "id": "legendarycreatures:root_attack",
       "required": false
+    },
+    {
+      "id": "legendarycreatures:hound_trap",
+      "required": false
     }
   ]
 }

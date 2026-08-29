@@ -27,6 +27,9 @@ public class SoundRegistry {
     public static final RegistryObject<SoundEvent> HOUND_IDLE = registerSoundEvent("hound_idle");
     public static final RegistryObject<SoundEvent> HOUND_BASE_ATTACK_HIT = registerSoundEvent("hound_base_attack_hit");
     public static final RegistryObject<SoundEvent> HOUND_ROOT_ATTACK = registerSoundEvent("hound_root_attack");
+    public static final RegistryObject<SoundEvent> HOUND_TRAP_CLOSED = registerSoundEvent("hound_trap_closed");
+    public static final RegistryObject<SoundEvent> HOUND_TRAP_OPENED = registerSoundEvent("hound_trap_opened");
+    public static final RegistryObject<SoundEvent> HOUND_TRAP_DAMAGE = registerSoundEvent("hound_trap_damage");
     public static final RegistryObject<SoundEvent> SCARECROW_DEATH = registerSoundEvent("scarecrow_death");
     public static final RegistryObject<SoundEvent> SCARECROW_STEP = registerSoundEvent("scarecrow_step");
     public static final RegistryObject<SoundEvent> SCARECROW_SPAWN = registerSoundEvent("scarecrow_spawn");
@@ -69,6 +72,7 @@ public class SoundRegistry {
     public static final RegistryObject<SoundEvent> JINX_UMBRELLA = registerSoundEvent("jinx_umbrella");
     public static final RegistryObject<SoundEvent> JINX_FLY = registerSoundEvent("jinx_fly");
     public static final RegistryObject<SoundEvent> FROGMAN_IDLE = registerSoundEvent("frogman_idle");
+    public static final RegistryObject<SoundEvent> FROGMAN_SLEEP = registerSoundEvent("frogman_sleep");
     public static final RegistryObject<SoundEvent> FROGMAN_HURT = registerSoundEvent("frogman_hurt");
     public static final RegistryObject<SoundEvent> FROGMAN_DEATH = registerSoundEvent("frogman_death");
     public static final RegistryObject<SoundEvent> FROGMAN_STEP = registerSoundEvent("frogman_step");

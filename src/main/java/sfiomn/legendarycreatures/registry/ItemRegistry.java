@@ -22,6 +22,9 @@ public class ItemRegistry {
     public static final RegistryObject<Item> BLOWGUN = ITEMS.register("blowgun",
             () -> new BlowgunItem(new Item.Properties().durability(30).rarity(Rarity.UNCOMMON)));
 
+    public static final RegistryObject<Item> HOUND_TOOTH = ITEMS.register("hound_tooth",
+            () -> new Item(new Item.Properties()));
+
     public static final RegistryObject<Item> STRAW_HAT = ITEMS.register("straw_hat", () -> new StrawHatItem(STRAW, ArmorItem.Type.HELMET, new Item.Properties().rarity(Rarity.RARE)));
 
     public static final RegistryObject<SpawnEggItem> DESERT_MOJO_SPAWN_EGG = ITEMS.register("desert_mojo_spawn_egg",

@@ -4,3 +4,6 @@ legendary_creatures 1.20.1 Changelog
 Bullfrogs can spawn in water (and only spawn during the day)
 Reduced shroomling size
 Added smoother rotation animation on all mobs
+Frogmen sleep sometimes. Sneaking while they sleep won't wake them up
+You deal double damage on a sleeping frogman
+Added sleep particles + sound to it

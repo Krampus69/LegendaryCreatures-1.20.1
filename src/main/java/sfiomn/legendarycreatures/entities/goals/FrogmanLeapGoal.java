@@ -35,6 +35,8 @@ public class FrogmanLeapGoal extends Goal {
 
     @Override
     public boolean canUse() {
+        if (this.frogman.isSleeping() || this.frogman.isWakingUp())
+            return false;
         if (!this.frogman.isLeapWanted())
             return false;
         if (this.frogman.getLeapCooldown() > 0)

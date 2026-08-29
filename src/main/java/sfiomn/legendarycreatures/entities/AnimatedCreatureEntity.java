@@ -104,7 +104,12 @@ public abstract class AnimatedCreatureEntity extends PathfinderMob implements Ge
 
     protected AnimatedCreatureEntity(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
-        this.setMaxUpStep(1.0F);
+        this.setMaxUpStep(1.05F);
+    }
+
+    @Override
+    public double getFluidJumpThreshold() {
+        return 1.0D;
     }
 
     @Override
