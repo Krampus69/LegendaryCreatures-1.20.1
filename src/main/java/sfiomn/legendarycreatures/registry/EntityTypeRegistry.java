@@ -109,6 +109,13 @@ public class EntityTypeRegistry {
                     .clientTrackingRange(10)
                     .build(new ResourceLocation(LegendaryCreatures.MOD_ID, "jinx").toString()));
 
+    public static final RegistryObject<EntityType<FertileSlimeballEntity>> FERTILE_SLIMEBALL = ENTITY_TYPES.register("fertile_slimeball",
+            () -> EntityType.Builder.<FertileSlimeballEntity>of(FertileSlimeballEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(4)
+                    .updateInterval(10)
+                    .build(new ResourceLocation(LegendaryCreatures.MOD_ID, "fertile_slimeball").toString()));
+
     public static final RegistryObject<EntityType<JinxDartEntity>> JINX_DART = ENTITY_TYPES.register("jinx_dart",
             () -> EntityType.Builder.<JinxDartEntity>of(JinxDartEntity::new, MobCategory.MISC)
                     .sized(0.5F, 0.5F)

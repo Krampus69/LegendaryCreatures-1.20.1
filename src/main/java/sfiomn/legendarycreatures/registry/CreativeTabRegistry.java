@@ -44,6 +44,7 @@ public class CreativeTabRegistry {
                         ItemRegistry.FROGMAN_SPAWN_EGG.get().getDefaultInstance(),
 
                         ItemRegistry.HOUND_TOOTH.get().getDefaultInstance(),
+                        ItemRegistry.FERTILE_SLIMEBALL.get().getDefaultInstance(),
                         BlockRegistry.HOUND_TRAP.get().asItem().getDefaultInstance(),
 
                         ItemRegistry.STRAW_HAT.get().getDefaultInstance(),

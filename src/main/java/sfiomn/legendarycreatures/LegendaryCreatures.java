@@ -157,6 +157,7 @@ public class LegendaryCreatures
             event.registerEntityRenderer(EntityTypeRegistry.FROGMAN.get(), FrogmanRenderer::new);
             event.registerEntityRenderer(EntityTypeRegistry.SHROOMLING.get(), ShroomlingRenderer::new);
             event.registerEntityRenderer(EntityTypeRegistry.JINX_DART.get(), JinxDartRenderer::new);
+            event.registerEntityRenderer(EntityTypeRegistry.FERTILE_SLIMEBALL.get(), FertileSlimeballRenderer::new);
             event.registerEntityRenderer(EntityTypeRegistry.SCARAB.get(), ScarabRenderer::new);
             event.registerEntityRenderer(EntityTypeRegistry.MANTIS.get(), MantisRenderer::new);
             event.registerEntityRenderer(EntityTypeRegistry.HERMIT_CRAB.get(), HermitCrabRenderer::new);

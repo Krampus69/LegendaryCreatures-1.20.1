@@ -11,6 +11,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import sfiomn.legendarycreatures.LegendaryCreatures;
 import sfiomn.legendarycreatures.items.BlowgunItem;
+import sfiomn.legendarycreatures.items.FertileSlimeballItem;
 import sfiomn.legendarycreatures.items.StrawHatItem;
 
 import static sfiomn.legendarycreatures.items.materials.ArmorMaterialBase.STRAW;
@@ -24,6 +25,9 @@ public class ItemRegistry {
 
     public static final RegistryObject<Item> HOUND_TOOTH = ITEMS.register("hound_tooth",
             () -> new Item(new Item.Properties()));
+
+    public static final RegistryObject<Item> FERTILE_SLIMEBALL = ITEMS.register("fertile_slimeball",
+            () -> new FertileSlimeballItem(new Item.Properties().stacksTo(16)));
 
     public static final RegistryObject<Item> STRAW_HAT = ITEMS.register("straw_hat", () -> new StrawHatItem(STRAW, ArmorItem.Type.HELMET, new Item.Properties().rarity(Rarity.RARE)));
 

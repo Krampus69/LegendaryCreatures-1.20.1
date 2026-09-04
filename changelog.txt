@@ -7,3 +7,5 @@ Added smoother rotation animation on all mobs
 Frogmen sleep sometimes. Sneaking while they sleep won't wake them up
 You deal double damage on a sleeping frogman
 Added sleep particles + sound to it
+Added the hound trap (hounds)
+Added the fertile slimeball (bullfrogs)

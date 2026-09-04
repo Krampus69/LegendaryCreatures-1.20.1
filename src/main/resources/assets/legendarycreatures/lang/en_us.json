@@ -3,6 +3,8 @@
   "block.legendarycreatures.doom_fire": "Doom Fire",
   "block.legendarycreatures.hound_trap": "Hound Trap",
   "item.legendarycreatures.hound_tooth": "Hound Tooth",
+  "item.legendarycreatures.fertile_slimeball": "Fertile Slimeball",
+  "tooltip.legendarycreatures.fertile_slimeball": "More powerful than bonemeal",
   "item.legendarycreatures.straw_hat": "Straw Hat",
   "item.legendarycreatures.straw_hat.description": "Prevents Scarecrow spawn",
   "item.legendarycreatures.desert_mojo_spawn_egg": "Desert Mojo Spawn Egg",

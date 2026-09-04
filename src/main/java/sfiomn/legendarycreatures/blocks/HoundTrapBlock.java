@@ -18,6 +18,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -47,6 +50,7 @@ public class HoundTrapBlock extends Block implements EntityBlock {
     private static final int REARM_DELAY = 40;
     private static final float TRAP_DAMAGE = 1.0F;
     private static final int DAMAGE_INTERVAL = 10;
+    private static final double ESCAPE_TOLERANCE = 0.1D;
     private static final float PITCH_BASE = 0.9F;
     private static final float PITCH_RANGE = 0.25F;
 
@@ -59,6 +63,35 @@ public class HoundTrapBlock extends Block implements EntityBlock {
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
         return new HoundTrapBlockEntity(pos, state);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
+        if (level.isClientSide || !state.getValue(CLOSED))
+            return null;
+        return (lvl, p, st, be) -> {
+            if (be instanceof HoundTrapBlockEntity trap)
+                checkEscape(st, (ServerLevel) lvl, p, trap);
+        };
+    }
+
+    private void checkEscape(BlockState state, ServerLevel level, BlockPos pos, HoundTrapBlockEntity trap) {
+        UUID trapped = trap.getTrapped();
+        if (trapped == null) {
+            open(state, level, pos);
+            return;
+        }
+
+        Entity entity = level.getEntity(trapped);
+        if (entity == null || !entity.isAlive()) {
+            open(state, level, pos);
+            return;
+        }
+
+        AABB trapBox = new AABB(pos).inflate(ESCAPE_TOLERANCE);
+        if (!entity.getBoundingBox().intersects(trapBox))
+            open(state, level, pos);
     }
 
     @Override
