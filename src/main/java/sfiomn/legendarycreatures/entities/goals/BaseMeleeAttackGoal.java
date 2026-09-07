@@ -71,11 +71,9 @@ public class BaseMeleeAttackGoal extends MoveToTargetGoal {
         if (target != null) {
             double distToTargetSqr = this.mob.distanceToSqr(target);
 
-            // Move to target
             super.tick();
 
-            // Attack target
-            if (this.ticksUntilNextAttack == 0 && getAttackReachSqr(target) >= distToTargetSqr && !isAttacking()) {
+            if (this.ticksUntilNextAttack == 0 && getAttackReachSqr(target) >= distToTargetSqr && this.mob.getSensing().hasLineOfSight(target) && !isAttacking()) {
                 this.mob.lookAt(EntityAnchorArgument.Anchor.EYES, target.position());
                 this.startAttack();
             }
@@ -84,9 +82,14 @@ public class BaseMeleeAttackGoal extends MoveToTargetGoal {
                 this.stopAttack();
             }
 
-            if (isActionPoint())
+            if (isActionPoint() && canHit(target))
                 this.executeAttack(target);
         }
+    }
+
+    protected boolean canHit(LivingEntity target) {
+        return getAttackReachSqr(target) >= this.mob.distanceToSqr(target)
+                && this.mob.getSensing().hasLineOfSight(target);
     }
 
     protected void startAttack() {
