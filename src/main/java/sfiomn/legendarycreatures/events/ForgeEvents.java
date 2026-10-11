@@ -39,6 +39,8 @@ import sfiomn.legendarycreatures.util.DamageSourceUtil;
 import sfiomn.legendarycreatures.util.WorldUtil;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import sfiomn.legendarycreatures.commands.SummonRarityCommand;
+import sfiomn.legendarycreatures.commands.LcRuleCommand;
+import sfiomn.legendarycreatures.util.PlayerRules;
 
 import java.util.*;
 
@@ -57,6 +59,14 @@ public class ForgeEvents {
                 player.level().getGameTime() + SCARECROW_IMMUNITY_TICKS);
     }
 
+    private static boolean isMojo(MobEntityEnum mobEntityEnum) {
+        return mobEntityEnum == MobEntityEnum.DESERT_MOJO || mobEntityEnum == MobEntityEnum.FOREST_MOJO;
+    }
+
+    private static boolean isTriggeredSpawnDisabled(Player player, MobEntityEnum mobEntityEnum) {
+        return isMojo(mobEntityEnum) && !PlayerRules.get(player, PlayerRules.Rule.DO_MOJOS_SPAWN);
+    }
+
 
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
@@ -71,6 +81,7 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void onRegisterCommands(RegisterCommandsEvent event) {
         SummonRarityCommand.register(event.getDispatcher(), event.getBuildContext());
+        LcRuleCommand.register(event.getDispatcher());
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -107,6 +118,9 @@ public class ForgeEvents {
                 return;
 
             for (MobEntityEnum mobEntityEnum : MobEntityEnum.values()) {
+                if (isTriggeredSpawnDisabled(player, mobEntityEnum))
+                    continue;
+
                 String mobId = mobEntityEnum.mobId;
                 BlackLists blackLists = JsonConfig.mobIdSpawnList.get(mobId).blackLists;
 
@@ -167,6 +181,8 @@ public class ForgeEvents {
         boolean isStrawHatWorn = (player.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof StrawHatItem);
 
         for (MobEntityEnum mobEntityEnum : MobEntityEnum.values()) {
+            if (isTriggeredSpawnDisabled(player, mobEntityEnum))
+                continue;
 
             String mobId = mobEntityEnum.mobId;
             String blockName = blockRegistryName.toString();
