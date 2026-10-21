@@ -1,5 +1,6 @@
 legendary_creatures 1.20.1 Changelog
-1.1.3.3
+1.1.3.4
 ====
-New command to prevent mojo spawn in plants
-New command to prevent scarecrows spawn in crops
+Added tag to prevent big mobs from being trapped in hound trap
+Frogmen drop fertile slimeballs now
+Added /lcrule for modders

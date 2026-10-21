@@ -7,7 +7,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:slime_ball",
+          "name": "legendarycreatures:fertile_slimeball",
           "functions": [
             {
               "function": "minecraft:set_count",

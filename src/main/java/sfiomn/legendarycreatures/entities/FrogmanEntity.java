@@ -292,6 +292,13 @@ public class FrogmanEntity extends AnimatedCreatureEntity implements Enemy {
         return this.entityData.get(LEAPING);
     }
 
+    @Override
+    public void knockback(double strength, double x, double z) {
+        if (isLeaping())
+            return;
+        super.knockback(strength, x, z);
+    }
+
     public void setLeaping(boolean leaping) {
         this.entityData.set(LEAPING, leaping);
     }

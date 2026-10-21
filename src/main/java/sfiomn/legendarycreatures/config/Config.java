@@ -91,6 +91,9 @@ public class Config
 		public final ForgeConfigSpec.BooleanValue mantisNaturalSpawn;
 		public final ForgeConfigSpec.BooleanValue hermitCrabNaturalSpawn;
 
+		public final ForgeConfigSpec.BooleanValue houndTrapBreakByHealth;
+		public final ForgeConfigSpec.DoubleValue houndTrapBreakHealthThreshold;
+
 		Common(ForgeConfigSpec.Builder builder)
 		{
 			builder.comment(" Options related to mob spawning").push("MobSpawning");
@@ -182,6 +185,11 @@ public class Config
 			builder.pop();
 
 			builder.pop();
+
+			builder.comment(" Options related to the Hound Trap block").push("HoundTrap");
+			houndTrapBreakByHealth = builder.comment("When true, any mob whose max health is above the threshold below breaks the trap when walking on it. Mobs in the legendarycreatures:hound_trap_breakers entity type tag always break it").define("Hound Trap Break By Health", true);
+			houndTrapBreakHealthThreshold = builder.comment("Max health above which a mob breaks the trap").defineInRange("Hound Trap Break Health Threshold", 50.0D, 0.0D, 10000.0D);
+			builder.pop();
 		}
 	}
 
@@ -235,6 +243,9 @@ public class Config
 		public static boolean mantisNaturalSpawn;
 		public static boolean hermitCrabNaturalSpawn;
 
+		public static boolean houndTrapBreakByHealth;
+		public static double houndTrapBreakHealthThreshold;
+
 		public static void bakeCommon()
 		{
 			try
@@ -285,6 +296,9 @@ public class Config
 				scarabNaturalSpawn = COMMON.scarabNaturalSpawn.get();
 				mantisNaturalSpawn = COMMON.mantisNaturalSpawn.get();
 				hermitCrabNaturalSpawn = COMMON.hermitCrabNaturalSpawn.get();
+
+				houndTrapBreakByHealth = COMMON.houndTrapBreakByHealth.get();
+				houndTrapBreakHealthThreshold = COMMON.houndTrapBreakHealthThreshold.get();
 			}
 			catch (Exception e)
 			{

@@ -2,10 +2,15 @@ package sfiomn.legendarycreatures.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,6 +35,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import sfiomn.legendarycreatures.api.ModDamageTypes;
+import sfiomn.legendarycreatures.config.Config;
 import sfiomn.legendarycreatures.registry.SoundRegistry;
 import sfiomn.legendarycreatures.util.DamageSourceUtil;
 import org.jetbrains.annotations.NotNull;
@@ -53,6 +59,8 @@ public class HoundTrapBlock extends Block implements EntityBlock {
     private static final double ESCAPE_TOLERANCE = 0.1D;
     private static final float PITCH_BASE = 0.9F;
     private static final float PITCH_RANGE = 0.25F;
+    private static final TagKey<EntityType<?>> TRAP_BREAKERS = TagKey.create(Registries.ENTITY_TYPE,
+            new ResourceLocation("legendarycreatures", "hound_trap_breakers"));
 
     public HoundTrapBlock(Properties properties) {
         super(properties);
@@ -125,6 +133,12 @@ public class HoundTrapBlock extends Block implements EntityBlock {
         if (living instanceof Player player && (player.isCreative() || player.isSpectator()))
             return;
 
+        if (canBreakTrap(living)) {
+            if (!level.isClientSide)
+                breakTrap(level, pos, living);
+            return;
+        }
+
         if (state.getValue(CLOSED)) {
             if (!isTrapped(level, pos, living))
                 return;
@@ -157,6 +171,18 @@ public class HoundTrapBlock extends Block implements EntityBlock {
         }
 
         hold(living, level, pos);
+    }
+
+    private boolean canBreakTrap(LivingEntity living) {
+        if (living.getType().is(TRAP_BREAKERS))
+            return true;
+        return Config.Baked.houndTrapBreakByHealth && living.getMaxHealth() > Config.Baked.houndTrapBreakHealthThreshold;
+    }
+
+    private void breakTrap(Level level, BlockPos pos, LivingEntity breaker) {
+        setTrapped(level, pos, null);
+        level.playSound(null, pos, SoundEvents.CHAIN_BREAK, SoundSource.BLOCKS, 1.0F, randomPitch(level));
+        level.destroyBlock(pos, false, breaker);
     }
 
     private boolean isTrapped(Level level, BlockPos pos, LivingEntity living) {

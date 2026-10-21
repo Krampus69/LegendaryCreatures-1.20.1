@@ -21,6 +21,9 @@ public class FrogmanLeapGoal extends Goal {
     private static final int MAX_DURATION_TICKS = 100;
     private static final int LANDING_COOLDOWN_TICKS = 20;
     private static final int[] ALLOWED_ANGLES = {40, 55, 60, 75, 80};
+    private static final int CANDIDATE_ATTEMPTS = 6;
+    private static final double MIN_LEAP_DISTANCE_SQR = 4.0D;
+    private static final double RETREAT_DISTANCE = 4.0D;
 
     private final FrogmanEntity frogman;
     private BlockPos leapTarget;
@@ -41,7 +44,7 @@ public class FrogmanLeapGoal extends Goal {
             return false;
         if (this.frogman.getLeapCooldown() > 0)
             return false;
-        if (!this.frogman.onGround() && !this.frogman.isInWater())
+        if (!this.frogman.onGround() && !this.frogman.isInWater() && this.frogman.fallDistance > 1.0F)
             return false;
 
         LivingEntity target = this.frogman.getTarget();
@@ -49,24 +52,50 @@ public class FrogmanLeapGoal extends Goal {
             this.frogman.setLeapWanted(false);
             return false;
         }
-        if (!this.frogman.level().noCollision(this.frogman, this.frogman.getBoundingBox().move(0.0D, 2.0D, 0.0D))) {
+        if (!this.frogman.level().noCollision(this.frogman, this.frogman.getBoundingBox().move(0.0D, 1.0D, 0.0D))) {
             this.frogman.setLeapWanted(false);
             return false;
         }
 
-        BlockPos candidate = this.snapToSurface(this.frogman.randomPointBehindTarget(target));
-        if (candidate == null || !this.frogman.level().getBlockState(candidate.below()).isSolid()) {
-            this.frogman.setLeapWanted(false);
-            return false;
+        for (int i = 0; i < CANDIDATE_ATTEMPTS; i++) {
+            BlockPos candidate = this.validCandidate(this.frogman.randomPointBehindTarget(target));
+            if (candidate != null) {
+                this.leapTarget = candidate;
+                return true;
+            }
         }
+
+        BlockPos retreat = this.validCandidate(this.retreatPoint(target));
+        if (retreat != null) {
+            this.leapTarget = retreat;
+            return true;
+        }
+
+        this.frogman.setLeapWanted(false);
+        return false;
+    }
+
+    private BlockPos validCandidate(Vec3 point) {
+        BlockPos candidate = this.snapToSurface(point);
+        if (candidate == null || !this.frogman.level().getBlockState(candidate.below()).isSolid())
+            return null;
+        if (candidate.distSqr(this.frogman.blockPosition()) < MIN_LEAP_DISTANCE_SQR)
+            return null;
+        if (!this.frogman.level().noCollision(this.frogman, this.frogman.getBoundingBox().move(
+                candidate.getX() + 0.5D - this.frogman.getX(), candidate.getY() - this.frogman.getY(), candidate.getZ() + 0.5D - this.frogman.getZ())))
+            return null;
         if (!this.frogman.hasLineOfSightTo(Vec3.atCenterOf(candidate))
-                && !this.frogman.hasLineOfSightTo(Vec3.atCenterOf(candidate.above(4)))) {
-            this.frogman.setLeapWanted(false);
-            return false;
-        }
+                && !this.frogman.hasLineOfSightTo(Vec3.atCenterOf(candidate.above(4))))
+            return null;
+        return candidate;
+    }
 
-        this.leapTarget = candidate;
-        return true;
+    private Vec3 retreatPoint(LivingEntity target) {
+        Vec3 away = this.frogman.position().subtract(target.position());
+        away = new Vec3(away.x, 0.0D, away.z);
+        if (away.lengthSqr() < 1.0E-4D)
+            away = Vec3.directionFromRotation(0.0F, this.frogman.getYRot() + 180.0F);
+        return this.frogman.position().add(away.normalize().scale(RETREAT_DISTANCE));
     }
 
     private BlockPos snapToSurface(Vec3 point) {
