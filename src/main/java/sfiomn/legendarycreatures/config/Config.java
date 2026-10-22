@@ -93,6 +93,7 @@ public class Config
 
 		public final ForgeConfigSpec.BooleanValue houndTrapBreakByHealth;
 		public final ForgeConfigSpec.DoubleValue houndTrapBreakHealthThreshold;
+		public final ForgeConfigSpec.DoubleValue frogmanSleepDamageMultiplier;
 
 		Common(ForgeConfigSpec.Builder builder)
 		{
@@ -190,6 +191,10 @@ public class Config
 			houndTrapBreakByHealth = builder.comment("When true, any mob whose max health is above the threshold below breaks the trap when walking on it. Mobs in the legendarycreatures:hound_trap_breakers entity type tag always break it").define("Hound Trap Break By Health", true);
 			houndTrapBreakHealthThreshold = builder.comment("Max health above which a mob breaks the trap").defineInRange("Hound Trap Break Health Threshold", 50.0D, 0.0D, 10000.0D);
 			builder.pop();
+
+			builder.comment(" Options related to the Frogman").push("Frogman");
+			frogmanSleepDamageMultiplier = builder.comment("Damage multiplier applied to a sleeping Frogman. 1.0 disables the bonus").defineInRange("Frogman Sleep Damage Multiplier", 2.0D, 1.0D, 100.0D);
+			builder.pop();
 		}
 	}
 
@@ -245,6 +250,7 @@ public class Config
 
 		public static boolean houndTrapBreakByHealth;
 		public static double houndTrapBreakHealthThreshold;
+		public static double frogmanSleepDamageMultiplier;
 
 		public static void bakeCommon()
 		{
@@ -299,6 +305,7 @@ public class Config
 
 				houndTrapBreakByHealth = COMMON.houndTrapBreakByHealth.get();
 				houndTrapBreakHealthThreshold = COMMON.houndTrapBreakHealthThreshold.get();
+				frogmanSleepDamageMultiplier = COMMON.frogmanSleepDamageMultiplier.get();
 			}
 			catch (Exception e)
 			{
